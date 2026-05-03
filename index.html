@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gelişmiş Sözlük Projesi</title>
+    <title>Çok Anlamlılık Sözlüğü</title>
     <style>
         /* Genel Tasarım */
         body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
         header { background: #2c3e50; color: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         
-        /* Arama Alanı - Sağ Üst */
+        /* Logo ve Link Ayarı */
+        .logo a { color: white; text-decoration: none; font-size: 1.2rem; font-weight: bold; transition: 0.3s; }
+        .logo a:hover { color: #3498db; }
+
+        /* Arama Alanı */
         .search-container { position: relative; width: 250px; }
         .search-box { width: 100%; padding: 8px 12px; border-radius: 20px; border: none; outline: none; font-size: 14px; }
         
-        /* Arama Önerileri (Max 5 Tane) */
+        /* Arama Önerileri */
         .suggestions { position: absolute; top: 40px; left: 0; width: 100%; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; overflow: hidden; }
         .suggestions div { padding: 10px; cursor: pointer; color: #333; border-bottom: 1px solid #eee; font-size: 14px; }
         .suggestions div:hover { background: #f0f0f0; }
@@ -42,7 +46,10 @@
 <body>
 
     <header>
-        <div class="logo"><strong>Özel Sözlüğüm</strong></div>
+        <div class="logo">
+            <!-- İstediğin Başlık Değişikliği ve Link Özelliği -->
+            <a href="https://imeyyetim-cpu.github.io/sozluk/">Çok Anlamlılık Sözlüğü</a>
+        </div>
         <div class="search-container">
             <input type="text" id="searchInput" class="search-box" placeholder="Sözcük ara..." oninput="aramaYap()">
             <div id="suggestionBox" class="suggestions"></div>
@@ -53,56 +60,53 @@
         <div class="filter-menu">
             <button onclick="filtrele('Hepsi')">Bütün Sözcükler</button>
             <button onclick="filtrele('Edebiyat')">Edebiyat</button>
-            <button onclick="filtrele('Terimler')">Terimler</button>
+            <button onclick="filtrele('Bölge Ağızları')">Bölge Ağızları</button>
             <button onclick="filtrele('Doğa')">Doğa</button>
         </div>
 
         <div id="wordList" class="word-list">
-            <!-- Kelimeler Buraya Gelecek -->
+            <!-- Kelimeler JS ile buraya gelecek -->
         </div>
     </main>
 
     <script>
-        // VERİ TABANI - Sen buraya karışık girsen de alfabetik sıralanır.
+        // VERİ TABANI - Örnek verilerini buraya eklemeye devam edebilirsin.
         const sozlukVerisi = [
+            {
+                kelime: "Gül",
+                konu: "Doğa",
+                anlamlar: ["Gülgillerden, kokulu çiçekleri olan bitki.", "Gülmek eylemi.", "Tasavvufta Hz. Muhammed'i temsil eden sembol."],
+                kaynak: "Kaynak: TDK ve Tasavvuf Terimleri Sözlüğü"
+            },
             {
                 kelime: "Bülbül",
                 konu: "Doğa",
-                anlamlar: ["Sesinin güzelliğiyle bilinen kuş.", "Divan edebiyatında gülün aşığı."],
+                anlamlar: ["Sesinin güzelliğiyle bilinen kuş.", "Divan edebiyatında gülün aşığı olan dertli aşık sembolü."],
                 kaynak: "Kaynak: Derleme Sözlüğü"
-            },
-            {
-                kelime: "Zahit",
-                konu: "Edebiyat",
-                anlamlar: ["Şüpheli şeylerden kaçınan dindar kimse.", "Divan şiirinde rindin karşıtı olan tip."],
-                kaynak: "Kaynak: TDV İslam Ansiklopedisi"
             },
             {
                 kelime: "Rind",
                 konu: "Edebiyat",
-                anlamlar: ["Dünya işlerini umursamayan, kalender kişi.", "İç dünyası zengin, gönül ehli kimse."],
+                anlamlar: ["Dünya işlerini umursamayan, kalender kişi.", "İç dünyası manevi zenginlikle dolu, dış görünüşe önem vermeyen kimse."],
                 kaynak: "Kaynak: Hayati Develi - Osmanlı Türkçesi Kılavuzu"
             },
             {
-                kelime: "Peymane",
-                konu: "Terimler",
-                anlamlar: ["Şarap bardağı, kadeh.", "Büyük ölçü birimi."],
-                kaynak: "Kaynak: TDK Güncel Sözlük"
+                kelime: "Alan",
+                konu: "Bölge Ağızları",
+                anlamlar: ["Düzlük, meydan.", "Bergama ağzında orman içindeki ağaçsız boşluk."],
+                kaynak: "Kaynak: TDK Derleme Sözlüğü (İzmir-Bergama maddesi)"
             }
         ];
 
         let aktifKonu = 'Hepsi';
 
-        // Kelimeleri Alfabetik Sıralama Fonksiyonu
         function alfabetikSirala(liste) {
             return liste.sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr'));
         }
 
-        // Ana Listeleme Fonksiyonu
         function listele(liste) {
             const alan = document.getElementById('wordList');
             alan.innerHTML = '';
-            
             const siraliListe = alfabetikSirala(liste);
 
             siraliListe.forEach(item => {
@@ -118,14 +122,12 @@
             });
         }
 
-        // Konu Filtreleme
         function filtrele(konu) {
             aktifKonu = konu;
             const sonuc = konu === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === konu);
             listele(sonuc);
         }
 
-        // Arama ve Öneri Fonksiyonu
         function aramaYap() {
             const input = document.getElementById('searchInput').value.toLowerCase();
             const suggestBox = document.getElementById('suggestionBox');
@@ -136,7 +138,6 @@
                 return;
             }
 
-            // Öneriler için filtrele (En fazla 5 tane)
             const eslesenler = sozlukVerisi
                 .filter(s => s.kelime.toLowerCase().startsWith(input))
                 .slice(0, 5);
@@ -148,12 +149,10 @@
                 suggestBox.style.display = 'none';
             }
 
-            // Ana ekrandaki listeyi de anlık güncelle
             const anaEkranSonuc = sozlukVerisi.filter(s => s.kelime.toLowerCase().includes(input));
             listele(anaEkranSonuc);
         }
 
-        // Öneriye tıklayınca yapılacak işlem
         function secVeGit(kelime) {
             document.getElementById('searchInput').value = kelime;
             document.getElementById('suggestionBox').style.display = 'none';
@@ -161,7 +160,6 @@
             listele(secilen);
         }
 
-        // Sayfa Yüklenince Hepsini Göster
         window.onload = () => listele(sozlukVerisi);
     </script>
 </body>
