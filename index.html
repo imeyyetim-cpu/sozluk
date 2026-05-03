@@ -3,77 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Özel Sözlüğüm</title>
+    <title>Gelişmiş Özel Sözlük</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; background-color: #f4f4f4; }
-        .menu { margin-bottom: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        button { margin-right: 10px; padding: 8px 15px; cursor: pointer; border: none; background: #007bff; color: white; border-radius: 4px; }
+        /* Tasarım Ayarları */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; background-color: #f0f2f5; color: #333; }
+        .header { text-align: center; margin-bottom: 30px; }
+        
+        /* Arama ve Filtreleme Alanı */
+        .controls { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .menu { display: flex; flex-wrap: wrap; gap: 10px; }
+        
+        /* Butonlar */
+        button { padding: 10px 18px; cursor: pointer; border: none; background: #007bff; color: white; border-radius: 6px; font-weight: 500; transition: 0.3s; }
         button:hover { background: #0056b3; }
-        .word-card { background: white; margin-bottom: 15px; padding: 15px; border-radius: 8px; border-left: 5px solid #007bff; }
-        .topic-tag { font-size: 0.8em; color: #666; font-style: italic; }
-        .meaning { margin-left: 20px; color: #333; }
-        h2 { margin-top: 0; color: #222; }
+        button.active { background: #28a745; }
+
+        /* Sözcük Kartları */
+        .word-card { background: white; margin-bottom: 20px; padding: 20px; border-radius: 12px; border-left: 6px solid #007bff; shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .topic-tag { font-size: 0.85em; color: #007bff; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        h2 { margin: 0 0 10px 0; color: #111; font-size: 24px; }
+        .meaning { margin: 8px 0 8px 20px; }
+        .source { font-style: italic; color: #666; margin-top: 15px; font-size: 0.9em; border-top: 1px solid #eee; padding-top: 10px; display: block; }
+        
+        #sozluk-alani { margin-top: 20px; }
+        .no-result { text-align: center; color: #888; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <h1>Sözlük Projesi</h1>
+    <div class="header">
+        <h1>📜 Özel Sözlük Projesi</h1>
+    </div>
 
-    <div class="menu">
-        <strong>Konular:</strong>
-        <button onclick="filtrele('Hepsi')">Bütün Sözcükler</button>
-        <button onclick="filtrele('Edebiyat')">Edebiyat</button>
-        <button onclick="filtrele('Doğa')">Doğa</button>
+    <div class="controls">
+        <!-- Arama Çubuğu -->
+        <input type="text" id="aramaInput" class="search-box" placeholder="Sözcük ara..." onkeyup="sozlukYönetici()">
+        
+        <!-- Konu Filtreleri -->
+        <div class="menu">
+            <button onclick="setKonu('Hepsi')">Bütün Sözcükler</button>
+            <button onclick="setKonu('Edebiyat')">Edebiyat</button>
+            <button onclick="setKonu('Terimler')">Terimler</button>
+            <button onclick="setKonu('Doğa')">Doğa</button>
+        </div>
     </div>
 
     <div id="sozluk-alani">
-        <!-- Sözcükler buraya gelecek -->
+        <!-- Sözcükler JS ile buraya akacak -->
     </div>
 
     <script>
-        // SÖZCÜKLERİNİ BURAYA EKLE (Her kelimeye en az 2 anlam)
+        // VERİ TABANI - Sözcükleri buraya istediğin sırada ekle, sistem alfabetik dizer.
         const sozlukVerisi = [
             {
-                kelime: "Gül",
+                kelime: "Rind",
+                konu: "Edebiyat",
+                anlamlar: ["Dünya işlerini umursamayan, gönül zenginliğine önem veren kimse.", "İç yüzü manevi değerlerle dolu olan kişi."],
+                kaynak: "Kaynak: TDV İslâm Ansiklopedisi"
+            },
+            {
+                kelime: "Peymane",
+                konu: "Terimler",
+                anlamlar: ["Şarap bardağı, kadeh.", "Büyük ölçek, kile."],
+                kaynak: "Kaynak: TDK Güncel Türkçe Sözlük"
+            },
+            {
+                kelime: "Zahit",
+                konu: "Edebiyat",
+                anlamlar: ["Dinin yasak ettiği şeylerden sakınan.", "Divan şiirinde rindin zıttı olan tip."],
+                kaynak: "Kaynak: Divan Edebiyatı Sözlüğü"
+            },
+            {
+                kelime: "Bülbül",
                 konu: "Doğa",
-                anlamlar: ["Gülgillerden, kokulu çiçekleri olan bitki.", "Gülmek eylemi."]
-            },
-            {
-                kelime: "Yazma",
-                konu: "Edebiyat",
-                anlamlar: ["Yazma işi, yazım.", "Elle boyanmış baş örtüsü."]
-            },
-            {
-                kelime: "Kıta",
-                konu: "Edebiyat",
-                anlamlar: ["Dört dizelik şiir bölümü.", "Yeryüzündeki büyük kara parçaları."]
+                anlamlar: ["Sesinin güzelliğiyle bilinen ötücü kuş.", "Divan edebiyatında gülün aşkıyla feryad eden aşık."],
+                kaynak: "Kaynak: Derleme Sözlüğü"
             }
         ];
 
-        function filtrele(konu) {
+        let seciliKonu = 'Hepsi';
+
+        function setKonu(konu) {
+            seciliKonu = konu;
+            sozlukYönetici();
+        }
+
+        function sozlukYönetici() {
+            const aramaTerimi = document.getElementById('aramaInput').value.toLowerCase();
             const alan = document.getElementById('sozluk-alani');
-            alan.innerHTML = ''; // Önce temizle
+            alan.innerHTML = '';
 
-            const suzulenler = konu === 'Hepsi' 
-                ? sozlukVerisi 
-                : sozlukVerisi.filter(s => s.konu === konu);
+            // 1. Filtrele (Konu ve Arama)
+            let sonuc List = sozlukVerisi.filter(item => {
+                const konuUygun = (seciliKonu === 'Hepsi' || item.konu === seciliKonu);
+                const aramaUygun = item.kelime.toLowerCase().includes(aramaTerimi);
+                return konuUygun && aramaUygun;
+            });
 
-            suzulenler.forEach(item => {
-                let anlamlarHtml = item.anlamlar.map((a, index) => `<p class="meaning"><b>${index + 1}.</b> ${a}</p>`).join('');
+            // 2. Alfabetik Sırala (A-Z)
+            sonucList.sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr'));
+
+            // 3. Ekrana Bas
+            if (sonucList.length === 0) {
+                alan.innerHTML = '<p class="no-result">Aradığınız kriterlere uygun sözcük bulunamadı.</p>';
+                return;
+            }
+
+            sonucList.forEach(item => {
+                let anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i + 1}.</b> ${a}</p>`).join('');
                 
                 alan.innerHTML += `
                     <div class="word-card">
                         <span class="topic-tag">#${item.konu}</span>
                         <h2>${item.kelime}</h2>
                         ${anlamlarHtml}
+                        <span class="source">${item.kaynak}</span>
                     </div>
                 `;
             });
         }
 
-        // Sayfa ilk açıldığında hepsini göster
-        filtrele('Hepsi');
+        // İlk açılışta listele
+        sozlukYönetici();
     </script>
 </body>
 </html>
-
