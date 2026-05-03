@@ -3,119 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gelişmiş Özel Sözlük</title>
+    <title>Gelişmiş Sözlük Projesi</title>
     <style>
-        /* Tasarım Ayarları */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; background-color: #f0f2f5; color: #333; }
-        .header { text-align: center; margin-bottom: 30px; }
+        /* Genel Tasarım */
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+        header { background: #2c3e50; color: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         
-        /* Arama ve Filtreleme Alanı */
-        .controls { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .menu { display: flex; flex-wrap: wrap; gap: 10px; }
+        /* Arama Alanı - Sağ Üst */
+        .search-container { position: relative; width: 250px; }
+        .search-box { width: 100%; padding: 8px 12px; border-radius: 20px; border: none; outline: none; font-size: 14px; }
         
-        /* Butonlar */
-        button { padding: 10px 18px; cursor: pointer; border: none; background: #007bff; color: white; border-radius: 6px; font-weight: 500; transition: 0.3s; }
-        button:hover { background: #0056b3; }
-        button.active { background: #28a745; }
+        /* Arama Önerileri (Max 5 Tane) */
+        .suggestions { position: absolute; top: 40px; left: 0; width: 100%; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; overflow: hidden; }
+        .suggestions div { padding: 10px; cursor: pointer; color: #333; border-bottom: 1px solid #eee; font-size: 14px; }
+        .suggestions div:hover { background: #f0f0f0; }
+
+        /* Ana İçerik */
+        main { padding: 20px 5%; max-width: 1000px; margin: auto; }
+        .filter-menu { margin-bottom: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        button { padding: 10px 20px; border: none; border-radius: 5px; background: #3498db; color: white; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        button:hover { background: #2980b9; }
 
         /* Sözcük Kartları */
-        .word-card { background: white; margin-bottom: 20px; padding: 20px; border-radius: 12px; border-left: 6px solid #007bff; shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .topic-tag { font-size: 0.85em; color: #007bff; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        h2 { margin: 0 0 10px 0; color: #111; font-size: 24px; }
-        .meaning { margin: 8px 0 8px 20px; }
-        .source { font-style: italic; color: #666; margin-top: 15px; font-size: 0.9em; border-top: 1px solid #eee; padding-top: 10px; display: block; }
-        
-        #sozluk-alani { margin-top: 20px; }
-        .no-result { text-align: center; color: #888; padding: 20px; }
+        .word-list { display: grid; gap: 20px; }
+        .word-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 6px solid #3498db; }
+        .word-card h2 { margin-top: 0; color: #2c3e50; font-size: 24px; }
+        .topic-badge { background: #e8f4fd; color: #3498db; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .meaning { margin: 12px 0 12px 20px; line-height: 1.5; }
+        .source { display: block; margin-top: 15px; font-style: italic; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #eee; padding-top: 10px; }
+
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 10px; }
+            .search-container { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>📜 Özel Sözlük Projesi</h1>
-    </div>
-
-    <div class="controls">
-        <!-- Arama Çubuğu -->
-        <input type="text" id="aramaInput" class="search-box" placeholder="Sözcük ara..." onkeyup="sozlukYönetici()">
-        
-        <!-- Konu Filtreleri -->
-        <div class="menu">
-            <button onclick="setKonu('Hepsi')">Bütün Sözcükler</button>
-            <button onclick="setKonu('Edebiyat')">Edebiyat</button>
-            <button onclick="setKonu('Terimler')">Terimler</button>
-            <button onclick="setKonu('Doğa')">Doğa</button>
+    <header>
+        <div class="logo"><strong>Özel Sözlüğüm</strong></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-box" placeholder="Sözcük ara..." oninput="aramaYap()">
+            <div id="suggestionBox" class="suggestions"></div>
         </div>
-    </div>
+    </header>
 
-    <div id="sozluk-alani">
-        <!-- Sözcükler JS ile buraya akacak -->
-    </div>
+    <main>
+        <div class="filter-menu">
+            <button onclick="filtrele('Hepsi')">Bütün Sözcükler</button>
+            <button onclick="filtrele('Edebiyat')">Edebiyat</button>
+            <button onclick="filtrele('Terimler')">Terimler</button>
+            <button onclick="filtrele('Doğa')">Doğa</button>
+        </div>
+
+        <div id="wordList" class="word-list">
+            <!-- Kelimeler Buraya Gelecek -->
+        </div>
+    </main>
 
     <script>
-        // VERİ TABANI - Sözcükleri buraya istediğin sırada ekle, sistem alfabetik dizer.
+        // VERİ TABANI - Sen buraya karışık girsen de alfabetik sıralanır.
         const sozlukVerisi = [
             {
-                kelime: "Rind",
-                konu: "Edebiyat",
-                anlamlar: ["Dünya işlerini umursamayan, gönül zenginliğine önem veren kimse.", "İç yüzü manevi değerlerle dolu olan kişi."],
-                kaynak: "Kaynak: TDV İslâm Ansiklopedisi"
-            },
-            {
-                kelime: "Peymane",
-                konu: "Terimler",
-                anlamlar: ["Şarap bardağı, kadeh.", "Büyük ölçek, kile."],
-                kaynak: "Kaynak: TDK Güncel Türkçe Sözlük"
+                kelime: "Bülbül",
+                konu: "Doğa",
+                anlamlar: ["Sesinin güzelliğiyle bilinen kuş.", "Divan edebiyatında gülün aşığı."],
+                kaynak: "Kaynak: Derleme Sözlüğü"
             },
             {
                 kelime: "Zahit",
                 konu: "Edebiyat",
-                anlamlar: ["Dinin yasak ettiği şeylerden sakınan.", "Divan şiirinde rindin zıttı olan tip."],
-                kaynak: "Kaynak: Divan Edebiyatı Sözlüğü"
+                anlamlar: ["Şüpheli şeylerden kaçınan dindar kimse.", "Divan şiirinde rindin karşıtı olan tip."],
+                kaynak: "Kaynak: TDV İslam Ansiklopedisi"
             },
             {
-                kelime: "Bülbül",
-                konu: "Doğa",
-                anlamlar: ["Sesinin güzelliğiyle bilinen ötücü kuş.", "Divan edebiyatında gülün aşkıyla feryad eden aşık."],
-                kaynak: "Kaynak: Derleme Sözlüğü"
+                kelime: "Rind",
+                konu: "Edebiyat",
+                anlamlar: ["Dünya işlerini umursamayan, kalender kişi.", "İç dünyası zengin, gönül ehli kimse."],
+                kaynak: "Kaynak: Hayati Develi - Osmanlı Türkçesi Kılavuzu"
+            },
+            {
+                kelime: "Peymane",
+                konu: "Terimler",
+                anlamlar: ["Şarap bardağı, kadeh.", "Büyük ölçü birimi."],
+                kaynak: "Kaynak: TDK Güncel Sözlük"
             }
         ];
 
-        let seciliKonu = 'Hepsi';
+        let aktifKonu = 'Hepsi';
 
-        function setKonu(konu) {
-            seciliKonu = konu;
-            sozlukYönetici();
+        // Kelimeleri Alfabetik Sıralama Fonksiyonu
+        function alfabetikSirala(liste) {
+            return liste.sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr'));
         }
 
-        function sozlukYönetici() {
-            const aramaTerimi = document.getElementById('aramaInput').value.toLowerCase();
-            const alan = document.getElementById('sozluk-alani');
+        // Ana Listeleme Fonksiyonu
+        function listele(liste) {
+            const alan = document.getElementById('wordList');
             alan.innerHTML = '';
+            
+            const siraliListe = alfabetikSirala(liste);
 
-            // 1. Filtrele (Konu ve Arama)
-            let sonuc List = sozlukVerisi.filter(item => {
-                const konuUygun = (seciliKonu === 'Hepsi' || item.konu === seciliKonu);
-                const aramaUygun = item.kelime.toLowerCase().includes(aramaTerimi);
-                return konuUygun && aramaUygun;
-            });
-
-            // 2. Alfabetik Sırala (A-Z)
-            sonucList.sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr'));
-
-            // 3. Ekrana Bas
-            if (sonucList.length === 0) {
-                alan.innerHTML = '<p class="no-result">Aradığınız kriterlere uygun sözcük bulunamadı.</p>';
-                return;
-            }
-
-            sonucList.forEach(item => {
-                let anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i + 1}.</b> ${a}</p>`).join('');
-                
+            siraliListe.forEach(item => {
+                const anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
                 alan.innerHTML += `
                     <div class="word-card">
-                        <span class="topic-tag">#${item.konu}</span>
+                        <span class="topic-badge">${item.konu}</span>
                         <h2>${item.kelime}</h2>
                         ${anlamlarHtml}
                         <span class="source">${item.kaynak}</span>
@@ -124,8 +118,51 @@
             });
         }
 
-        // İlk açılışta listele
-        sozlukYönetici();
+        // Konu Filtreleme
+        function filtrele(konu) {
+            aktifKonu = konu;
+            const sonuc = konu === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === konu);
+            listele(sonuc);
+        }
+
+        // Arama ve Öneri Fonksiyonu
+        function aramaYap() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const suggestBox = document.getElementById('suggestionBox');
+            
+            if (input.length === 0) {
+                suggestBox.style.display = 'none';
+                filtrele(aktifKonu);
+                return;
+            }
+
+            // Öneriler için filtrele (En fazla 5 tane)
+            const eslesenler = sozlukVerisi
+                .filter(s => s.kelime.toLowerCase().startsWith(input))
+                .slice(0, 5);
+
+            if (eslesenler.length > 0) {
+                suggestBox.style.display = 'block';
+                suggestBox.innerHTML = eslesenler.map(s => `<div onclick="secVeGit('${s.kelime}')">${s.kelime}</div>`).join('');
+            } else {
+                suggestBox.style.display = 'none';
+            }
+
+            // Ana ekrandaki listeyi de anlık güncelle
+            const anaEkranSonuc = sozlukVerisi.filter(s => s.kelime.toLowerCase().includes(input));
+            listele(anaEkranSonuc);
+        }
+
+        // Öneriye tıklayınca yapılacak işlem
+        function secVeGit(kelime) {
+            document.getElementById('searchInput').value = kelime;
+            document.getElementById('suggestionBox').style.display = 'none';
+            const secilen = sozlukVerisi.filter(s => s.kelime === kelime);
+            listele(secilen);
+        }
+
+        // Sayfa Yüklenince Hepsini Göster
+        window.onload = () => listele(sozlukVerisi);
     </script>
 </body>
 </html>
