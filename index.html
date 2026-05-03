@@ -2,10 +2,78 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Sözlük Projem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Özel Sözlüğüm</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; background-color: #f4f4f4; }
+        .menu { margin-bottom: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        button { margin-right: 10px; padding: 8px 15px; cursor: pointer; border: none; background: #007bff; color: white; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        .word-card { background: white; margin-bottom: 15px; padding: 15px; border-radius: 8px; border-left: 5px solid #007bff; }
+        .topic-tag { font-size: 0.8em; color: #666; font-style: italic; }
+        .meaning { margin-left: 20px; color: #333; }
+        h2 { margin-top: 0; color: #222; }
+    </style>
 </head>
 <body>
-    <h1>Sözlük Yakında Burada!</h1>
-    <p>Adım adım inşa ediliyor...</p>
+
+    <h1>Sözlük Projesi</h1>
+
+    <div class="menu">
+        <strong>Konular:</strong>
+        <button onclick="filtrele('Hepsi')">Bütün Sözcükler</button>
+        <button onclick="filtrele('Edebiyat')">Edebiyat</button>
+        <button onclick="filtrele('Doğa')">Doğa</button>
+    </div>
+
+    <div id="sozluk-alani">
+        <!-- Sözcükler buraya gelecek -->
+    </div>
+
+    <script>
+        // SÖZCÜKLERİNİ BURAYA EKLE (Her kelimeye en az 2 anlam)
+        const sozlukVerisi = [
+            {
+                kelime: "Gül",
+                konu: "Doğa",
+                anlamlar: ["Gülgillerden, kokulu çiçekleri olan bitki.", "Gülmek eylemi."]
+            },
+            {
+                kelime: "Yazma",
+                konu: "Edebiyat",
+                anlamlar: ["Yazma işi, yazım.", "Elle boyanmış baş örtüsü."]
+            },
+            {
+                kelime: "Kıta",
+                konu: "Edebiyat",
+                anlamlar: ["Dört dizelik şiir bölümü.", "Yeryüzündeki büyük kara parçaları."]
+            }
+        ];
+
+        function filtrele(konu) {
+            const alan = document.getElementById('sozluk-alani');
+            alan.innerHTML = ''; // Önce temizle
+
+            const suzulenler = konu === 'Hepsi' 
+                ? sozlukVerisi 
+                : sozlukVerisi.filter(s => s.konu === konu);
+
+            suzulenler.forEach(item => {
+                let anlamlarHtml = item.anlamlar.map((a, index) => `<p class="meaning"><b>${index + 1}.</b> ${a}</p>`).join('');
+                
+                alan.innerHTML += `
+                    <div class="word-card">
+                        <span class="topic-tag">#${item.konu}</span>
+                        <h2>${item.kelime}</h2>
+                        ${anlamlarHtml}
+                    </div>
+                `;
+            });
+        }
+
+        // Sayfa ilk açıldığında hepsini göster
+        filtrele('Hepsi');
+    </script>
 </body>
 </html>
+
