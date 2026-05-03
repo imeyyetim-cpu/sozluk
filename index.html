@@ -33,9 +33,49 @@
         .word-list { display: grid; gap: 20px; }
         .word-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 6px solid #3498db; }
         .word-card h2 { margin-top: 0; color: #2c3e50; font-size: 24px; }
-        .topic-badge { background: #e8f4fd; color: #3498db; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        
+        /* Tıklanabilir Konu Etiketi */
+        .topic-badge { 
+            background: #e8f4fd; 
+            color: #3498db; 
+            padding: 4px 10px; 
+            border-radius: 4px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            transition: 0.2s;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .topic-badge:hover { background: #3498db; color: white; }
+
         .meaning { margin: 12px 0 12px 20px; line-height: 1.5; }
         .source { display: block; margin-top: 15px; font-style: italic; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #eee; padding-top: 10px; }
+
+        /* Yukarı Çık Butonu */
+        #scrollTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #2c3e50;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: 0.3s;
+            width: 50px;
+            height: 50px;
+            line-height: 20px;
+            text-align: center;
+        }
+        #scrollTopBtn:hover { background-color: #3498db; }
 
         @media (max-width: 600px) {
             header { flex-direction: column; gap: 10px; }
@@ -47,7 +87,6 @@
 
     <header>
         <div class="logo">
-            <!-- İstediğin Başlık Değişikliği ve Link Özelliği -->
             <a href="https://imeyyetim-cpu.github.io/sozluk/">Çok Anlamlılık Sözlüğü</a>
         </div>
         <div class="search-container">
@@ -84,8 +123,10 @@
         </div>
     </main>
 
+    <!-- Yukarı Çık Butonu -->
+    <button onclick="topFunction()" id="scrollTopBtn" title="Yukarı Çık">↑</button>
+
     <script>
-        // VERİ TABANI - Örnek verilerini buraya eklemeye devam edebilirsin.
         const sozlukVerisi = [
             {
                 kelime: "Arsa",
@@ -128,7 +169,7 @@
                 const anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
                 alan.innerHTML += `
                     <div class="word-card">
-                        <span class="topic-badge">${item.konu}</span>
+                        <span class="topic-badge" onclick="filtrele('${item.konu}')">#${item.konu}</span>
                         <h2>${item.kelime}</h2>
                         ${anlamlarHtml}
                         <span class="source">${item.kaynak}</span>
@@ -141,6 +182,8 @@
             aktifKonu = konu;
             const sonuc = konu === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === konu);
             listele(sonuc);
+            // Filtreleme sonrası sayfayı en üste kaydır
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function aramaYap() {
@@ -173,6 +216,22 @@
             document.getElementById('suggestionBox').style.display = 'none';
             const secilen = sozlukVerisi.filter(s => s.kelime === kelime);
             listele(secilen);
+        }
+
+        // Yukarı Çık Butonu Kontrolü
+        let mybutton = document.getElementById("scrollTopBtn");
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        function topFunction() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         window.onload = () => listele(sozlukVerisi);
