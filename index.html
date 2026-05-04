@@ -23,6 +23,8 @@
 
         /* Minimal Filtre Menüsü */
         .filter-menu { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+        
+        /* PowerPoint Efekti: Sadece flex-basis ve opacity ile geçiş */
         .sub-categories { 
             display: none; 
             gap: 8px; 
@@ -32,21 +34,22 @@
             background: #fff;
             border-radius: 12px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
-            animation: slideDown 0.4s ease forwards;
+            animation: fadeIn 0.4s ease-in-out;
         }
         
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         button { padding: 8px 18px; border: 1px solid #3498db; border-radius: 20px; background: white; color: #3498db; cursor: pointer; transition: 0.3s; font-weight: 500; font-size: 13px; }
-        button:hover, button.active { background: #3498db; color: white; }
+        button:hover { background: #3498db; color: white; }
 
         /* Sözcük Kartları */
         .word-list { display: grid; gap: 15px; }
         .word-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-left: 4px solid #3498db; }
         
+        /* Yan Yana Düzen: Kategori ve Kelime */
         .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
         .word-card h2 { margin: 0; color: #2c3e50; font-size: 19px; font-weight: 600; }
         
@@ -97,6 +100,7 @@
             <button onclick="toggleCategories()" id="catMainBtn">Kategoriler ▼</button>
         </div>
 
+        <!-- Sadece 'Kategoriler' butonuna basınca açılan panel -->
         <div id="categoryPanel" class="sub-categories">
             <button onclick="filtrele('Musiki')">Musiki</button>
             <button onclick="filtrele('Oyunlar')">Oyunlar</button>
@@ -173,6 +177,7 @@
             const alan = document.getElementById('wordList');
             alan.innerHTML = '';
             
+            // Alfabetik sıralama yapıyoruz
             liste.sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr')).forEach(item => {
                 const anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
                 alan.innerHTML += `
@@ -194,6 +199,7 @@
         function filtrele(konu) {
             const sonuc = konu === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === konu);
             listele(sonuc);
+            // Otomatik kapatma kodu kaldırıldı!
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
@@ -201,9 +207,11 @@
             const input = document.getElementById('searchInput').value.toLowerCase();
             const suggestBox = document.getElementById('suggestionBox');
             if (input.length === 0) { suggestBox.style.display = 'none'; listele(sozlukVerisi); return; }
+            
             const eslesenler = sozlukVerisi.filter(s => s.kelime.toLowerCase().startsWith(input)).slice(0, 5);
             suggestBox.style.display = eslesenler.length > 0 ? 'block' : 'none';
             suggestBox.innerHTML = eslesenler.map(s => `<div onclick="secVeGit('${s.kelime}')">${s.kelime}</div>`).join('');
+            
             listele(sozlukVerisi.filter(s => s.kelime.toLowerCase().includes(input)));
         }
 
@@ -220,6 +228,7 @@
 
         function topFunction() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
+        // Sayfa yüklendiğinde listeyi bas
         window.onload = () => listele(sozlukVerisi);
     </script>
 </body>
