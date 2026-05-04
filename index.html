@@ -24,7 +24,6 @@
         /* Minimal Filtre Menüsü */
         .filter-menu { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
         
-        /* PowerPoint Efekti: Sadece flex-basis ve opacity ile geçiş */
         .sub-categories { 
             display: none; 
             gap: 8px; 
@@ -44,12 +43,14 @@
 
         button { padding: 8px 18px; border: 1px solid #3498db; border-radius: 20px; background: white; color: #3498db; cursor: pointer; transition: 0.3s; font-weight: 500; font-size: 13px; }
         button:hover { background: #3498db; color: white; }
+        
+        /* Aktif buton stilini belirginleştirelim */
+        button.active-filter { background: #3498db; color: white; border-color: #2c3e50; }
 
         /* Sözcük Kartları */
         .word-list { display: grid; gap: 15px; }
         .word-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-left: 4px solid #3498db; }
         
-        /* Yan Yana Düzen: Kategori ve Kelime */
         .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
         .word-card h2 { margin: 0; color: #2c3e50; font-size: 19px; font-weight: 600; }
         
@@ -96,30 +97,29 @@
 
     <main>
         <div class="filter-menu">
-            <button onclick="filtrele('Hepsi')">Bütün Sözcükler</button>
+            <button onclick="filtrele('Hepsi')" id="btn-Hepsi">Bütün Sözcükler</button>
             <button onclick="toggleCategories()" id="catMainBtn">Kategoriler ▼</button>
         </div>
 
-        <!-- Sadece 'Kategoriler' butonuna basınca açılan panel -->
         <div id="categoryPanel" class="sub-categories">
-            <button onclick="filtrele('Musiki')">Musiki</button>
-            <button onclick="filtrele('Oyunlar')">Oyunlar</button>
-            <button onclick="filtrele('Okçuluk')">Okçuluk</button>
-            <button onclick="filtrele('Giyim Kuşam')">Giyim Kuşam</button>
-            <button onclick="filtrele('Meslek')">Meslek</button>
-            <button onclick="filtrele('Hat Sanatı')">Hat Sanatı</button>
-            <button onclick="filtrele('Bitkiler')">Bitkiler</button>
-            <button onclick="filtrele('Hayvanlar')">Hayvanlar</button>
-            <button onclick="filtrele('Dini/Tarihi Şahsiyet')">Dini/Tarihi Şahsiyet</button>
-            <button onclick="filtrele('Efsanevi/Mitolojik Şahsiyet')">Efsanevi/Mitolojik Şahsiyet</button>
-            <button onclick="filtrele('Eser/Coğrafya İsmi')">Eser/Coğrafya İsmi</button>
-            <button onclick="filtrele('Kozmik Unsurlar')">Kozmik Unsurlar</button>
-            <button onclick="filtrele('İçki')">İçki</button>
-            <button onclick="filtrele('Organ Adları ve Tıp')">Organ Adları ve Tıp</button>
-            <button onclick="filtrele('Edebiyat ve Gramer')">Edebiyat ve Gramer</button>
-            <button onclick="filtrele('Sureler')">Sureler</button>
-            <button onclick="filtrele('Renkler')">Renkler</button>
-            <button onclick="filtrele('Diğer')">Diğer</button>
+            <button onclick="filtrele('Musiki')" id="btn-Musiki">Musiki</button>
+            <button onclick="filtrele('Oyunlar')" id="btn-Oyunlar">Oyunlar</button>
+            <button onclick="filtrele('Okçuluk')" id="btn-Okçuluk">Okçuluk</button>
+            <button onclick="filtrele('Giyim Kuşam')" id="btn-Giyim Kuşam">Giyim Kuşam</button>
+            <button onclick="filtrele('Meslek')" id="btn-Meslek">Meslek</button>
+            <button onclick="filtrele('Hat Sanatı')" id="btn-Hat Sanatı">Hat Sanatı</button>
+            <button onclick="filtrele('Bitkiler')" id="btn-Bitkiler">Bitkiler</button>
+            <button onclick="filtrele('Hayvanlar')" id="btn-Hayvanlar">Hayvanlar</button>
+            <button onclick="filtrele('Dini/Tarihi Şahsiyet')" id="btn-Dini/Tarihi Şahsiyet">Dini/Tarihi Şahsiyet</button>
+            <button onclick="filtrele('Efsanevi/Mitolojik Şahsiyet')" id="btn-Efsanevi/Mitolojik Şahsiyet">Efsanevi/Mitolojik Şahsiyet</button>
+            <button onclick="filtrele('Eser/Coğrafya İsmi')" id="btn-Eser/Coğrafya İsmi">Eser/Coğrafya İsmi</button>
+            <button onclick="filtrele('Kozmik Unsurlar')" id="btn-Kozmik Unsurlar">Kozmik Unsurlar</button>
+            <button onclick="filtrele('İçki')" id="btn-İçki">İçki</button>
+            <button onclick="filtrele('Organ Adları ve Tıp')" id="btn-Organ Adları ve Tıp">Organ Adları ve Tıp</button>
+            <button onclick="filtrele('Edebiyat ve Gramer')" id="btn-Edebiyat ve Gramer">Edebiyat ve Gramer</button>
+            <button onclick="filtrele('Sureler')" id="btn-Sureler">Sureler</button>
+            <button onclick="filtrele('Renkler')" id="btn-Renkler">Renkler</button>
+            <button onclick="filtrele('Diğer')" id="btn-Diğer">Diğer</button>
         </div>
 
         <div id="wordList" class="word-list"></div>
@@ -161,6 +161,8 @@
             }
         ];
 
+        let aktifFiltre = 'Hepsi';
+
         function toggleCategories() {
             const panel = document.getElementById('categoryPanel');
             const btn = document.getElementById('catMainBtn');
@@ -177,7 +179,6 @@
             const alan = document.getElementById('wordList');
             alan.innerHTML = '';
             
-            // Alfabetik sıralama yapıyoruz
             liste.sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr')).forEach(item => {
                 const anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
                 alan.innerHTML += `
@@ -197,9 +198,21 @@
         }
 
         function filtrele(konu) {
-            const sonuc = konu === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === konu);
+            // Eğer zaten o kategorideysen ve tekrar tıkladıysan, "Hepsi"ne dön
+            if (aktifFiltre === konu && konu !== 'Hepsi') {
+                aktifFiltre = 'Hepsi';
+            } else {
+                aktifFiltre = konu;
+            }
+
+            const sonuc = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
             listele(sonuc);
-            // Otomatik kapatma kodu kaldırıldı!
+
+            // Butonların görsel aktifliğini güncelle
+            document.querySelectorAll('button').forEach(b => b.classList.remove('active-filter'));
+            const activeBtn = document.getElementById('btn-' + aktifFiltre);
+            if(activeBtn) activeBtn.classList.add('active-filter');
+
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
@@ -228,7 +241,6 @@
 
         function topFunction() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
-        // Sayfa yüklendiğinde listeyi bas
         window.onload = () => listele(sozlukVerisi);
     </script>
 </body>
