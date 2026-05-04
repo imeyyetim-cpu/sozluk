@@ -60,7 +60,9 @@
             font-weight: bold; 
             text-transform: uppercase; 
             cursor: pointer;
+            transition: 0.2s;
         }
+        .topic-badge:hover { background: #3498db; color: white; }
 
         .meaning { margin: 8px 0 8px 15px; line-height: 1.4; font-size: 15px; }
 
@@ -98,7 +100,6 @@
         </div>
 
         <div id="categoryPanel" class="sub-categories">
-            <!-- Kategoriler butonuyla id'lerin eşleşmesi için btn-Kategori formatı -->
             <button onclick="filtrele('Musiki')" id="btn-Musiki">Musiki</button>
             <button onclick="filtrele('Oyunlar')" id="btn-Oyunlar">Oyunlar</button>
             <button onclick="filtrele('Okçuluk')" id="btn-Okçuluk">Okçuluk</button>
@@ -148,12 +149,15 @@
             const alan = document.getElementById('wordList');
             alan.innerHTML = '';
             
-            liste.sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr')).forEach(item => {
+            // Veriyi kelimeye göre alfabetik sıralayıp ekrana basıyoruz
+            const siraliListe = [...liste].sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr'));
+            
+            siraliListe.forEach(item => {
                 const anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
                 alan.innerHTML += `
                     <div class="word-card" id="word-${item.kelime.replace(/\s+/g, '-')}">
                         <div class="card-header">
-                            <span class="topic-badge" onclick="filtrele('${item.konu}')">#${item.konu}</span>
+                            <span class="topic-badge" onclick="event.stopPropagation(); filtrele('${item.konu}')">#${item.konu}</span>
                             <h2>${item.kelime}</h2>
                         </div>
                         ${anlamlarHtml}
@@ -167,24 +171,35 @@
         }
 
         function filtrele(konu) {
+            // Arama ve öneri kutusunu temizleyelim ki filtre sıfırlandığında çakışma yaşanmasın
+            document.getElementById('searchInput').value = '';
+            document.getElementById('suggestionBox').style.display = 'none';
+
             const oncekiFiltre = aktifFiltre;
             
-            // İKİNCİ KEZ TIKLAMA DURUMU
+            // İKİNCİ KEZ TIKLAMA DURUMU (Tıklanan kategori zaten aktifse 'Hepsi'ne dön)
             if (aktifFiltre === konu && konu !== 'Hepsi') {
                 aktifFiltre = 'Hepsi';
             } else {
                 // Yeni bir filtreye geçmeden önce mevcut konumu kaydet (sadece Hepsi'den ayrılıyorsak)
-                if(aktifFiltre === 'Hepsi') sonKaydirmaKonumu = window.scrollY;
+                if(aktifFiltre === 'Hepsi') {
+                    sonKaydirmaKonumu = window.scrollY;
+                }
                 aktifFiltre = konu;
             }
 
+            // Veriyi aktif filtreye göre hazırla
             const sonuc = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
             listele(sonuc);
 
-            // Buton Görselliği
-            document.querySelectorAll('.filter-menu button, .sub-categories button').forEach(b => b.classList.remove('active-filter'));
+            // Buton Görselliğini Güncelle
+            document.querySelectorAll('.filter-menu button, .sub-categories button').forEach(b => {
+                b.classList.remove('active-filter');
+            });
             const activeBtn = document.getElementById('btn-' + aktifFiltre);
-            if(activeBtn) activeBtn.classList.add('active-filter');
+            if(activeBtn) {
+                activeBtn.classList.add('active-filter');
+            }
 
             // KAYDIRMA MANTIĞI
             if (aktifFiltre === 'Hepsi' && oncekiFiltre !== 'Hepsi') {
@@ -197,13 +212,23 @@
         }
 
         function aramaYap() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
+            const input = document.getElementById('searchInput').value.toLocaleLowerCase('tr');
             const suggestBox = document.getElementById('suggestionBox');
-            if (input.length === 0) { suggestBox.style.display = 'none'; listele(sozlukVerisi); return; }
-            const eslesenler = sozlukVerisi.filter(s => s.kelime.toLowerCase().startsWith(input)).slice(0, 5);
+            
+            if (input.length === 0) { 
+                suggestBox.style.display = 'none'; 
+                listele(aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre)); 
+                return; 
+            }
+            
+            // Aktif kategori içinden veya tüm sözlükten arama yapma mantığı
+            const aranacakVeri = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
+            
+            const eslesenler = aranacakVeri.filter(s => s.kelime.toLocaleLowerCase('tr').startsWith(input)).slice(0, 5);
             suggestBox.style.display = eslesenler.length > 0 ? 'block' : 'none';
             suggestBox.innerHTML = eslesenler.map(s => `<div onclick="secVeGit('${s.kelime}')">${s.kelime}</div>`).join('');
-            listele(sozlukVerisi.filter(s => s.kelime.toLowerCase().includes(input)));
+            
+            listele(aranacakVeri.filter(s => s.kelime.toLocaleLowerCase('tr').includes(input)));
         }
 
         function secVeGit(kelime) {
@@ -217,7 +242,9 @@
             btn.style.display = (window.scrollY > 300) ? "block" : "none";
         };
 
-        function topFunction() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+        function topFunction() { 
+            window.scrollTo({top: 0, behavior: 'smooth'}); 
+        }
 
         window.onload = () => listele(sozlukVerisi);
     </script>
