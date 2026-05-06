@@ -126,7 +126,7 @@
     <button onclick="topFunction()" id="scrollTopBtn" title="Yukarı Çık">↑</button>
 
     <script>
-                const sozlukVerisi = [
+        const sozlukVerisi = [
             { kelime: "Arsa", konu: "Oyunlar", anlamlar: ["Toprak ve kara parçası. Yeryüzü. Dünya.", "Satranç tahtası."], kaynak: "Kaynak: Yılmaz, Ozan. “ŞERHİN METNİNDEN METNİN ŞERHİNE: TÜRKÇE ŞERHLERDEN HAREKETLE KLASİK TÜRK ŞİİRİNİN ANLAM DÜNYASINA KATKILAR I”. Hikmet - Akademik Edebiyat Dergisi. 01 Aralık 2018. 264-273. https://doi.org/10.28981/hikmet.481508." },
             { kelime: "Battâl", konu: "Diğer", anlamlar: ["İşe yaramaz, Boş, Değersiz, Aylak, Tembel.", "Aşksız, Bi-kar."], kaynak: "Kaynak: Yılmaz, Ozan. “ŞERHİN METNİNDEN METNİN ŞERHİNE: TÜRKÇE ŞERHLERDEN HAREKETLE KLASİK TÜRK ŞİİRİNİN ANLAM DÜNYASINA KATKILAR I”. Hikmet - Akademik Edebiyat Dergisi. 01 Aralık 2018. 264-273. https://doi.org/10.28981/hikmet.481508."},
             { kelime: "Âyet-i Ye's", konu: "Sureler", anlamlar: ["Hüzün/keder ayeti.", "Kafirler için inen ayet-i kerimelerin genel adı."], kaynak: "Yılmaz, Ozan. “ŞERHİN METNİNDEN METNİN ŞERHİNE: TÜRKÇE ŞERHLERDEN HAREKETLE KLASİK TÜRK ŞİİRİNİN ANLAM DÜNYASINA KATKILAR I”. Hikmet - Akademik Edebiyat Dergisi. 01 Aralık 2018. 264-273. https://doi.org/10.28981/hikmet.481508."},
@@ -140,9 +140,20 @@
             { kelime: "Mihr-giyâ", konu: "Bitkiler", anlamlar: ["Mahabbet otu. Aşk otu. (Bu ot, kaplumbağanın bilip kullandığı bir ottur. Dişisi kendisine yüz vermeyecek olsa, aşk otunu dişisinin üstüne koyar ve onu kendine âşık eder. Sûdî ise mihr-giyânın bir ot olduğunu, bu otu yanında taşıyan kimsenin herkesçe sevildiğini söyler. aşk otunun bir tür uyuşturucu etkisi vardır ve onu koklayan canlıların hareket kâbiliyeti azalmaktadır.", "Sevgilinin yüzü", "Güneş otu. Güneşi takip eden ot."], kaynak: "Kaynak: Yılmaz, Ozan “ŞERHİN METNİNDEN METNİN ŞERHİNE: TÜRKÇE ŞERHLERDEN HAREKETLE KLASİK TÜRK ŞİİRİNİN ANLAM DÜNYASINA KATKILAR I”. Hikmet - Akademik Edebiyat Dergisi. 01 Aralık 2018. 264-273. https://doi.org/10.28981/hikmet.481508." }
         ];
 
-
         let aktifFiltre = 'Hepsi';
         let sonKaydirmaKonumu = 0;
+
+        // HARF NORMALİZASYON FONKSİYONU (Arama ve Sıralama için)
+        function metniTemizle(metin) {
+            return metin.toLocaleLowerCase('tr')
+                .replace(/â/g, 'a')
+                .replace(/î/g, 'i')
+                .replace(/û/g, 'u')
+                .replace(/Â/g, 'a')
+                .replace(/Î/g, 'i')
+                .replace(/Û/g, 'u')
+                .trim();
+        }
 
         function toggleCategories() {
             const panel = document.getElementById('categoryPanel');
@@ -156,8 +167,10 @@
             const alan = document.getElementById('wordList');
             alan.innerHTML = '';
             
-            // Veriyi kelimeye göre alfabetik sıralayıp ekrana basıyoruz
-            const siraliListe = [...liste].sort((a, b) => a.kelime.localeCompare(b.kelime, 'tr'));
+            // Alfabetik sıralama: Â'yı A gibi düşünerek sıralar
+            const siraliListe = [...liste].sort((a, b) => {
+                return metniTemizle(a.kelime).localeCompare(metniTemizle(b.kelime), 'tr');
+            });
             
             siraliListe.forEach(item => {
                 const anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
@@ -178,28 +191,23 @@
         }
 
         function filtrele(konu) {
-            // Arama ve öneri kutusunu temizleyelim ki filtre sıfırlandığında çakışma yaşanmasın
             document.getElementById('searchInput').value = '';
             document.getElementById('suggestionBox').style.display = 'none';
 
             const oncekiFiltre = aktifFiltre;
             
-            // İKİNCİ KEZ TIKLAMA DURUMU (Tıklanan kategori zaten aktifse 'Hepsi'ne dön)
             if (aktifFiltre === konu && konu !== 'Hepsi') {
                 aktifFiltre = 'Hepsi';
             } else {
-                // Yeni bir filtreye geçmeden önce mevcut konumu kaydet (sadece Hepsi'den ayrılıyorsak)
                 if(aktifFiltre === 'Hepsi') {
                     sonKaydirmaKonumu = window.scrollY;
                 }
                 aktifFiltre = konu;
             }
 
-            // Veriyi aktif filtreye göre hazırla
             const sonuc = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
             listele(sonuc);
 
-            // Buton Görselliğini Güncelle
             document.querySelectorAll('.filter-menu button, .sub-categories button').forEach(b => {
                 b.classList.remove('active-filter');
             });
@@ -208,18 +216,16 @@
                 activeBtn.classList.add('active-filter');
             }
 
-            // KAYDIRMA MANTIĞI
             if (aktifFiltre === 'Hepsi' && oncekiFiltre !== 'Hepsi') {
-                // Filtreden genel listeye dönüldüyse, eski yere yavaşça kaydır
                 window.scrollTo({ top: sonKaydirmaKonumu, behavior: 'smooth' });
             } else if (aktifFiltre !== 'Hepsi') {
-                // Yeni bir kategori seçildiyse en başa çık
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
         function aramaYap() {
-            const input = document.getElementById('searchInput').value.toLocaleLowerCase('tr');
+            const rawInput = document.getElementById('searchInput').value;
+            const input = metniTemizle(rawInput); // Arama terimini normalize et
             const suggestBox = document.getElementById('suggestionBox');
             
             if (input.length === 0) { 
@@ -228,14 +234,15 @@
                 return; 
             }
             
-            // Aktif kategori içinden veya tüm sözlükten arama yapma mantığı
             const aranacakVeri = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
             
-            const eslesenler = aranacakVeri.filter(s => s.kelime.toLocaleLowerCase('tr').startsWith(input)).slice(0, 5);
+            // Kelimeyi normalize ederek karşılaştır (A = Â eşleşmesi burada sağlanıyor)
+            const eslesenler = aranacakVeri.filter(s => metniTemizle(s.kelime).startsWith(input)).slice(0, 5);
+            
             suggestBox.style.display = eslesenler.length > 0 ? 'block' : 'none';
             suggestBox.innerHTML = eslesenler.map(s => `<div onclick="secVeGit('${s.kelime}')">${s.kelime}</div>`).join('');
             
-            listele(aranacakVeri.filter(s => s.kelime.toLocaleLowerCase('tr').includes(input)));
+            listele(aranacakVeri.filter(s => metniTemizle(s.kelime).includes(input)));
         }
 
         function secVeGit(kelime) {
