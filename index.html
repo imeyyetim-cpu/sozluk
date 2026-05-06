@@ -143,7 +143,7 @@
         let aktifFiltre = 'Hepsi';
         let sonKaydirmaKonumu = 0;
 
-        // HARF NORMALİZASYON FONKSİYONU (Arama ve Sıralama için)
+        // HARF NORMALİZASYON FONKSİYONU
         function metniTemizle(metin) {
             return metin.toLocaleLowerCase('tr')
                 .replace(/â/g, 'a')
@@ -167,7 +167,6 @@
             const alan = document.getElementById('wordList');
             alan.innerHTML = '';
             
-            // Alfabetik sıralama: Â'yı A gibi düşünerek sıralar
             const siraliListe = [...liste].sort((a, b) => {
                 return metniTemizle(a.kelime).localeCompare(metniTemizle(b.kelime), 'tr');
             });
@@ -223,9 +222,10 @@
             }
         }
 
+        // ARAMA YAPMA FONKSİYONU - DÜZELTİLDİ
         function aramaYap() {
             const rawInput = document.getElementById('searchInput').value;
-            const input = metniTemizle(rawInput); // Arama terimini normalize et
+            const input = metniTemizle(rawInput);
             const suggestBox = document.getElementById('suggestionBox');
             
             if (input.length === 0) { 
@@ -236,13 +236,16 @@
             
             const aranacakVeri = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
             
-            // Kelimeyi normalize ederek karşılaştır (A = Â eşleşmesi burada sağlanıyor)
-            const eslesenler = aranacakVeri.filter(s => metniTemizle(s.kelime).startsWith(input)).slice(0, 5);
+            // Filtreleme: Sadece yazılan harfle BAŞLAYANLARI getirir
+            const sonucListesi = aranacakVeri.filter(s => metniTemizle(s.kelime).startsWith(input));
             
+            // Öneri kutusu (maksimum 5 tane)
+            const eslesenler = sonucListesi.slice(0, 5);
             suggestBox.style.display = eslesenler.length > 0 ? 'block' : 'none';
             suggestBox.innerHTML = eslesenler.map(s => `<div onclick="secVeGit('${s.kelime}')">${s.kelime}</div>`).join('');
             
-            listele(aranacakVeri.filter(s => metniTemizle(s.kelime).includes(input)));
+            // Ana listeyi güncelle (Sadece baş harf eşleşenler kalacak)
+            listele(sonucListesi);
         }
 
         function secVeGit(kelime) {
