@@ -14,118 +14,84 @@
 
         .search-container { position: relative; width: 250px; display: flex; flex-direction: column; gap: 8px; }
         .search-box { width: 100%; padding: 8px 12px; border-radius: 20px; border: none; outline: none; font-size: 14px; box-sizing: border-box; }
-        
-        /* YENİ: Site içi detaylı arama çubuğu */
-        .site-search-box { background-color: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.3); transition: 0.3s; }
-        .site-search-box::placeholder { color: #bdc3c7; }
-        .site-search-box:focus { background-color: white; color: #333; }
-        .site-search-box:focus::placeholder { color: #95a5a6; }
+        .site-search-box { background-color: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.3); }
 
-        .suggestions { position: absolute; top: 40px; left: 0; width: 100%; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; overflow: hidden; z-index: 1001; }
-        .suggestions div { padding: 10px; cursor: pointer; color: #333; border-bottom: 1px solid #eee; font-size: 14px; }
-        .suggestions div:hover { background: #f0f0f0; }
+        .suggestions { position: absolute; top: 80px; left: 0; width: 100%; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; z-index: 1001; }
+        .suggestions div { padding: 10px; cursor: pointer; color: #333; border-bottom: 1px solid #eee; }
 
-        main { padding: 20px 5%; max-width: 900px; margin: auto; min-height: 70vh; }
+        main { padding: 20px 5%; max-width: 1000px; margin: auto; min-height: 80vh; }
 
-        .filter-menu { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
-        
-        .sub-categories { 
-            display: none; 
-            gap: 8px; 
-            flex-wrap: wrap; 
-            margin-bottom: 30px;
-            padding: 15px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
-            animation: fadeIn 0.4s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .filter-menu { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .sub-categories { display: none; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); }
 
-        button { padding: 8px 18px; border: 1px solid #3498db; border-radius: 20px; background: white; color: #3498db; cursor: pointer; transition: 0.3s; font-weight: 500; font-size: 13px; }
-        button:hover { background: #3498db; color: white; }
-        
-        button.active-filter { background: #3498db !important; color: white !important; }
+        button { padding: 8px 18px; border: 1px solid #3498db; border-radius: 20px; background: white; color: #3498db; cursor: pointer; transition: 0.3s; font-weight: 500; }
+        button:hover, button.active-filter { background: #3498db; color: white; }
 
+        /* Kelime Kartları */
         .word-list { display: grid; gap: 15px; }
         .word-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-left: 4px solid #3498db; transition: 0.3s; }
-        
-        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-        .word-card h2 { margin: 0; color: #2c3e50; font-size: 19px; font-weight: 600; }
-        
-        .topic-badge { 
-            background: #e8f4fd; 
-            color: #3498db; 
-            padding: 3px 8px; 
-            border-radius: 4px; 
-            font-size: 10px; 
-            font-weight: bold; 
-            text-transform: uppercase; 
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .topic-badge:hover { background: #3498db; color: white; }
-
-        .meaning { margin: 8px 0 8px 15px; line-height: 1.4; font-size: 15px; }
-
-        details { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-        details summary { font-size: 0.75rem; color: #95a5a6; cursor: pointer; outline: none; list-style: none; }
-        details summary:hover { color: #3498db; }
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+        .topic-badge { background: #e8f4fd; color: #3498db; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .meaning { margin: 8px 0 8px 15px; line-height: 1.5; }
         .source-content { margin-top: 8px; font-style: italic; color: #7f8c8d; font-size: 0.85em; background: #f9f9f9; padding: 10px; border-radius: 4px; }
 
-        /* YENİ: Liste Görünümü Tasarımı */
-        .list-view-container { display: flex; gap: 20px; align-items: flex-start; }
-        .list-sidebar { flex: 1; max-width: 250px; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); max-height: 70vh; overflow-y: auto; border: 1px solid #e1e8ed; }
-        .list-sidebar::-webkit-scrollbar { width: 5px; }
-        .list-sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
-        .list-sidebar-item { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 14px; transition: 0.2s; border-radius: 4px; color: #2c3e50; }
-        .list-sidebar-item:last-child { border-bottom: none; }
-        .list-sidebar-item:hover { background: #f8f9fa; color: #3498db; }
-        .list-sidebar-item.active { background: #3498db; color: white; font-weight: bold; box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3); }
-        .list-main { flex: 3; }
-
-        /* YENİ: Tema Değiştirme Butonu */
-        #viewToggleBtn {
-            position: fixed; bottom: 30px; right: 85px; z-index: 99; border: none; outline: none; background-color: #3498db; color: white; cursor: pointer; padding: 12px 20px; border-radius: 25px; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 500;
+        /* YENİ: Gelişmiş Liste Görünümü (Dikey ve Yatay Uyumlu) */
+        .list-view-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        .list-sidebar { 
+            width: 100%; 
+            background: #fff; 
+            border-radius: 8px; 
+            max-height: 300px; 
+            overflow-y: auto; 
+            border: 1px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
         }
-        #viewToggleBtn:hover { background-color: #2980b9; transform: translateY(-2px); }
-
-        #scrollTopBtn {
-            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99; border: none; outline: none; background-color: #2c3e50; color: white; cursor: pointer; padding: 15px; border-radius: 50%; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 45px; height: 45px; line-height: 15px; transition: 0.3s;
+        .list-sidebar-item { 
+            padding: 10px 15px; 
+            border-bottom: 1px solid #f1f5f9; 
+            cursor: pointer; 
+            text-align: right; /* Kelime sağda */
+            color: #7f8c8d;
+            transition: 0.2s;
         }
-        #scrollTopBtn:hover { background-color: #1a252f; transform: translateY(-2px); }
+        .list-sidebar-item.active { 
+            background: #f8f9fa; 
+            color: #2c3e50; 
+            font-weight: bold; 
+            text-align: center; /* Seçili kelime ortada */
+            font-size: 1.1rem;
+            border-left: 5px solid #3498db;
+            border-right: 5px solid #3498db;
+        }
+        .list-main { width: 100%; }
 
-        /* YENİ: İstatistik Bölümü */
-        .stats-container { margin: 40px auto 0 auto; background: white; padding: 20px 30px; border-radius: 12px; display: flex; justify-content: center; gap: 50px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e1e8ed; max-width: 600px; text-align: center; }
-        .stats-item { font-size: 13px; color: #7f8c8d; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-        .stats-item strong { display: block; font-size: 24px; color: #2c3e50; margin-top: 8px; font-weight: 700; }
-
+        /* Mobil Düzenlemeler */
         @media (max-width: 768px) {
-            header { flex-direction: column; gap: 15px; }
+            header { flex-direction: column; padding: 1rem; }
             .search-container { width: 100%; }
-            .list-view-container { flex-direction: column; }
-            .list-sidebar { max-width: 100%; width: 100%; max-height: 250px; }
-            .stats-container { flex-direction: column; gap: 20px; }
-            #viewToggleBtn { right: 20px; bottom: 85px; } 
-            #scrollTopBtn { right: 20px; bottom: 20px; }
+            main { padding: 10px 3%; }
+            .word-card { padding: 15px; }
+            #viewToggleBtn { right: 10px !important; bottom: 80px !important; }
+            #scrollTopBtn { right: 10px !important; bottom: 20px !important; }
         }
+
+        /* Butonlar */
+        #viewToggleBtn { position: fixed; bottom: 30px; right: 85px; z-index: 99; border: none; background: #3498db; color: white; padding: 12px 20px; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #scrollTopBtn { display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99; border: none; background: #2c3e50; color: white; padding: 15px; border-radius: 50%; cursor: pointer; width: 45px; height: 45px; }
+
+        .stats-container { margin: 40px auto; background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: center; gap: 30px; border: 1px solid #e1e8ed; flex-wrap: wrap; }
+        .stats-item { text-align: center; color: #7f8c8d; font-size: 12px; }
+        .stats-item strong { display: block; font-size: 20px; color: #2c3e50; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <a href="https://imeyyetim-cpu.github.io/sozluk/">Çok Anlamlılık Sözlüğü</a>
-        </div>
+        <div class="logo"><a href="#">Çok Anlamlılık Sözlüğü</a></div>
         <div class="search-container">
-            <!-- Eski Sözcük Arama -->
             <input type="text" id="searchInput" class="search-box" placeholder="Sözcük ara..." oninput="aramaYap()">
-            <!-- Yeni Site İçi Detaylı Arama -->
-            <input type="text" id="siteSearchInput" class="search-box site-search-box" placeholder="Site içi detaylı arama..." oninput="aramaYap()">
+            <input type="text" id="siteSearchInput" class="search-box site-search-box" placeholder="Detaylı ara..." oninput="aramaYap()">
             <div id="suggestionBox" class="suggestions"></div>
         </div>
     </header>
@@ -137,50 +103,27 @@
         </div>
 
         <div id="categoryPanel" class="sub-categories">
+            <!-- Kategoriler JS ile dinamik de üretilebilir, burada sabit bıraktım -->
             <button onclick="filtrele('Musiki')" id="btn-Musiki">Musiki</button>
             <button onclick="filtrele('Oyunlar')" id="btn-Oyunlar">Oyunlar</button>
             <button onclick="filtrele('Okçuluk')" id="btn-Okçuluk">Okçuluk</button>
             <button onclick="filtrele('Giyim Kuşam')" id="btn-Giyim Kuşam">Giyim Kuşam</button>
-            <button onclick="filtrele('Meslek')" id="btn-Meslek">Meslek</button>
-            <button onclick="filtrele('Hat Sanatı')" id="btn-Hat Sanatı">Hat Sanatı</button>
             <button onclick="filtrele('Bitkiler')" id="btn-Bitkiler">Bitkiler</button>
-            <button onclick="filtrele('Hayvanlar')" id="btn-Hayvanlar">Hayvanlar</button>
-            <button onclick="filtrele('Dini/Tarihi Şahsiyet')" id="btn-Dini/Tarihi Şahsiyet">Dini/Tarihi Şahsiyet</button>
-            <button onclick="filtrele('Efsanevi/Mitolojik Şahsiyet')" id="btn-Efsanevi/Mitolojik Şahsiyet">Efsanevi/Mitolojik Şahsiyet</button>
-            <button onclick="filtrele('Eser/Coğrafya İsmi')" id="btn-Eser/Coğrafya İsmi">Eser/Coğrafya İsmi</button>
-            <button onclick="filtrele('Kozmik Unsurlar')" id="btn-Kozmik Unsurlar">Kozmik Unsurlar</button>
-            <button onclick="filtrele('İçki')" id="btn-İçki">İçki</button>
-            <button onclick="filtrele('Organ Adları ve Tıp')" id="btn-Organ Adları ve Tıp">Organ Adları ve Tıp</button>
-            <button onclick="filtrele('Edebiyat ve Gramer')" id="btn-Edebiyat ve Gramer">Edebiyat ve Gramer</button>
-            <button onclick="filtrele('Sureler')" id="btn-Sureler">Sureler</button>
-            <button onclick="filtrele('Renkler ve Resim')" id="btn-Renkler">Renkler</button>
-            <button onclick="filtrele('Diğer')" id="btn-Diğer">Diğer</button>
-            <button onclick="filtrele('Güzellik/Güzellik Unsurları')" id="btn-Güzellik/Güzellik Unsurları">Güzellik/Güzellik Unsurları</button>
             <button onclick="filtrele('Deyimler')" id="btn-Deyimler">Deyimler</button>
+            <button onclick="filtrele('Diğer')" id="btn-Diğer">Diğer</button>
         </div>
 
         <div id="wordList" class="word-list"></div>
 
-        <!-- İstatistik Bölümü -->
         <div class="stats-container">
-            <div class="stats-item">
-                Toplam Kelime Sayısı
-                <strong id="statTotalWords">0</strong>
-            </div>
-            <div class="stats-item">
-                Son 24 Saatte Eklenen
-                <strong id="statNewWords">0</strong>
-            </div>
+            <div class="stats-item">Toplam Kelime <strong id="statTotalWords">0</strong></div>
         </div>
     </main>
 
-    <!-- Yeni Tema Değiştirme Butonu -->
-    <button onclick="toggleViewMode()" id="viewToggleBtn" title="Görünümü Değiştir">
-        <span id="viewIcon">📋</span> <span id="viewText">Liste Görünümü</span>
-    </button>
-    <button onclick="topFunction()" id="scrollTopBtn" title="Yukarı Çık">↑</button>
+    <button onclick="toggleViewMode()" id="viewToggleBtn"><span id="viewIcon">📋</span> <span id="viewText">Liste Görünümü</span></button>
+    <button onclick="topFunction()" id="scrollTopBtn">↑</button>
 
-    <script>
+<script>
         const sozlukVerisi = [
             { kelime: "Arsa", konu: "Oyunlar", anlamlar: ["Toprak ve kara parçası. Yeryüzü. Dünya.", "Satranç tahtası."], kaynak: "Kaynak: Yılmaz, Ozan. “ŞERHİN METNİNDEN METNİN ŞERHİNE: TÜRKÇE ŞERHLERDEN HAREKETLE KLASİK TÜRK ŞİİRİNİN ANLAM DÜNYASINA KATKILAR I”. Hikmet - Akademik Edebiyat Dergisi. 01 Aralık 2018. 264-273. https://doi.org/10.28981/hikmet.481508." },
             { kelime: "Battâl", konu: "Diğer", anlamlar: ["İşe yaramaz, Boş, Değersiz, Aylak, Tembel.", "Aşksız, Bi-kar."], kaynak: "Kaynak: Yılmaz, Ozan. “ŞERHİN METNİNDEN METNİN ŞERHİNE: TÜRKÇE ŞERHLERDEN HAREKETLE KLASİK TÜRK ŞİİRİNİN ANLAM DÜNYASINA KATKILAR I”. Hikmet - Akademik Edebiyat Dergisi. 01 Aralık 2018. 264-273. https://doi.org/10.28981/hikmet.481508."},
@@ -261,225 +204,142 @@
             { kelime: "Bahreyn", konu: "Eser/Coğrafya İsmi", anlamlar: ["Bahreyn (ülke adı).", "İki deniz arası (Akdeniz ve Karadeniz)."], kaynak: "Özbakır, Elif. Ahmedi Divanında Çok Anlamlılık. Yüksek Lisans Tezi. Çukurova Üniversitesi. 2024."}
         ];
 
-        let aktifFiltre = 'Hepsi';
-        let sonKaydirmaKonumu = 0;
-        let isListView = false; // Görünüm Modu
-        let selectedListViewWord = ""; 
-        let currentDisplayedList = []; 
 
-        function metniTemizle(metin) {
-            return metin.toLocaleLowerCase('tr')
-                .replace(/'/g, '')
-                .replace(/â/g, 'a')
-                .replace(/î/g, 'i')
-                .replace(/û/g, 'u')
-                .replace(/Â/g, 'a')
-                .replace(/Î/g, 'i')
-                .replace(/Û/g, 'u')
-                .trim();
+        let aktifFiltre = 'Hepsi';
+        let isListView = false;
+        let seciliKelime = "";
+
+        function metniTemizle(t) {
+            return t.toLocaleLowerCase('tr').replace(/['âîû]/g, m => ({'â':'a','î':'i','û':'u'})[m] || "").trim();
         }
 
         function toggleCategories() {
-            const panel = document.getElementById('categoryPanel');
-            const btn = document.getElementById('catMainBtn');
-            const isVisible = panel.style.display === 'flex';
-            panel.style.display = isVisible ? 'none' : 'flex';
-            btn.innerText = isVisible ? 'Kategoriler ▼' : 'Kategoriler ▲';
+            const p = document.getElementById('categoryPanel');
+            const b = document.getElementById('catMainBtn');
+            const isHidden = p.style.display !== 'flex';
+            p.style.display = isHidden ? 'flex' : 'none';
+            b.innerText = isHidden ? 'Kategoriler ▲' : 'Kategoriler ▼';
         }
 
         function toggleViewMode() {
             isListView = !isListView;
-            const btnText = document.getElementById('viewText');
-            const btnIcon = document.getElementById('viewIcon');
-            
-            if (isListView) {
-                btnText.innerText = 'Detaylı Görünüm';
-                btnIcon.innerText = '📝';
-                if (!selectedListViewWord && currentDisplayedList.length > 0) {
-                    selectedListViewWord = currentDisplayedList[Math.floor(Math.random() * currentDisplayedList.length)].kelime;
-                }
-            } else {
-                btnText.innerText = 'Liste Görünümü';
-                btnIcon.innerText = '📋';
-            }
-            listele(currentDisplayedList);
+            document.getElementById('viewText').innerText = isListView ? 'Detaylı Görünüm' : 'Liste Görünümü';
+            document.getElementById('viewIcon').innerText = isListView ? '📝' : '📋';
+            filtrele(aktifFiltre, seciliKelime);
         }
 
-        function selectWordForList(kelime) {
-            selectedListViewWord = kelime;
-            listele(currentDisplayedList);
-        }
-
-        function kategoriyeGitVeListele(konu, kelime) {
-            if (!isListView) { toggleViewMode(); }
-            selectedListViewWord = kelime;
-            filtrele(konu);
-        }
-
-        function renderListMode(liste) {
-            const alan = document.getElementById('wordList');
-            if (liste.length === 0) {
-                alan.innerHTML = '<p style="text-align:center; color:#7f8c8d; font-style:italic;">Arama sonucunda kelime bulunamadı.</p>';
-                return;
-            }
-
-            let activeWordData = liste.find(s => s.kelime === selectedListViewWord);
-            if (!activeWordData) {
-                activeWordData = liste[Math.floor(Math.random() * liste.length)];
-                selectedListViewWord = activeWordData.kelime;
-            }
-
-            let sidebarHtml = `<div class="list-sidebar">`;
-            liste.forEach(item => {
-                const isActive = item.kelime === selectedListViewWord ? 'active' : '';
-                sidebarHtml += `<div class="list-sidebar-item ${isActive}" onclick="selectWordForList('${item.kelime.replace(/'/g, "\\'")}')">${item.kelime}</div>`;
-            });
-            sidebarHtml += `</div>`;
-
-            let mainHtml = `<div class="list-main">`;
-            const anlamlarHtml = activeWordData.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
-            mainHtml += `
-                <div class="word-card" style="border-left: 4px solid #2c3e50;">
-                    <div class="card-header">
-                        <span class="topic-badge" onclick="event.stopPropagation(); kategoriyeGitVeListele('${activeWordData.konu}', '${activeWordData.kelime.replace(/'/g, "\\'")}')">#${activeWordData.konu}</span>
-                        <h2>${activeWordData.kelime}</h2>
-                    </div>
-                    ${anlamlarHtml}
-                    <details>
-                        <summary>Kaynakça Göster</summary>
-                        <div class="source-content">${activeWordData.kaynak}</div>
-                    </details>
-                </div>
-            `;
-            mainHtml += `</div>`;
-
-            alan.innerHTML = `<div class="list-view-container">${sidebarHtml}${mainHtml}</div>`;
-        }
-
-        function listele(liste) {
-            currentDisplayedList = liste;
-            const alan = document.getElementById('wordList');
-            alan.innerHTML = '';
-            
-            const siraliListe = [...liste].sort((a, b) => {
-                return metniTemizle(a.kelime).localeCompare(metniTemizle(b.kelime), 'tr');
-            });
-            
-            if (isListView) {
-                renderListMode(siraliListe);
-                return;
-            }
-
-            siraliListe.forEach(item => {
-                const anlamlarHtml = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
-                alan.innerHTML += `
-                    <div class="word-card" id="word-${item.kelime.replace(/\s+/g, '-')}">
-                        <div class="card-header">
-                            <span class="topic-badge" onclick="event.stopPropagation(); kategoriyeGitVeListele('${item.konu}', '${item.kelime.replace(/'/g, "\\'")}')">#${item.konu}</span>
-                            <h2>${item.kelime}</h2>
-                        </div>
-                        ${anlamlarHtml}
-                        <details>
-                            <summary>Kaynakça Göster</summary>
-                            <div class="source-content">${item.kaynak}</div>
-                        </details>
-                    </div>
-                `;
-            });
-        }
-
-        function filtrele(konu) {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('siteSearchInput').value = '';
-            document.getElementById('suggestionBox').style.display = 'none';
-
-            const oncekiFiltre = aktifFiltre;
-            
-            if (aktifFiltre === konu && konu !== 'Hepsi') {
+        function filtrele(konu, odaklanilacakKelime = "") {
+            // Eğer aynı konuya tekrar basılırsa "Hepsi"ne dön
+            if (aktifFiltre === konu && konu !== 'Hepsi' && !odaklanilacakKelime) {
                 aktifFiltre = 'Hepsi';
             } else {
-                if(aktifFiltre === 'Hepsi') {
-                    sonKaydirmaKonumu = window.scrollY;
-                }
                 aktifFiltre = konu;
             }
 
             const sonuc = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
-            listele(sonuc);
+            
+            // Alfabetik sırala
+            sonuc.sort((a,b) => metniTemizle(a.kelime).localeCompare(metniTemizle(b.kelime), 'tr'));
 
-            document.querySelectorAll('.filter-menu button, .sub-categories button').forEach(b => {
-                b.classList.remove('active-filter');
-            });
+            // Eğer özel bir kelimeye gitmemiz isteniyorsa onu seçili yap
+            if (odaklanilacakKelime) seciliKelime = odaklanilacakKelime;
+            else if (sonuc.length > 0 && !sonuc.some(s => s.kelime === seciliKelime)) {
+                seciliKelime = sonuc[0].kelime;
+            }
+
+            render(sonuc);
+            updateButtons();
+        }
+
+        function render(liste) {
+            const alan = document.getElementById('wordList');
+            alan.innerHTML = "";
+
+            if (isListView) {
+                // LİSTE GÖRÜNÜMÜ TASARIMI
+                let sidebar = `<div class="list-sidebar">`;
+                liste.forEach(s => {
+                    const activeClass = s.kelime === seciliKelime ? 'active' : '';
+                    sidebar += `<div class="list-sidebar-item ${activeClass}" onclick="secVeOdakla('${s.kelime}')">${s.kelime}</div>`;
+                });
+                sidebar += `</div>`;
+
+                const data = liste.find(s => s.kelime === seciliKelime) || liste[0];
+                let mainContent = data ? generateCardHtml(data) : "";
+
+                alan.innerHTML = `<div class="list-view-container">${sidebar}<div class="list-main">${mainContent}</div></div>`;
+                
+                // Seçili kelimeyi sidebar içinde ortala
+                setTimeout(() => {
+                    const activeEl = document.querySelector('.list-sidebar-item.active');
+                    if(activeEl) activeEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }, 100);
+
+            } else {
+                // DETAYLI GÖRÜNÜM TASARIMI
+                liste.forEach(s => {
+                    alan.innerHTML += generateCardHtml(s);
+                });
+                
+                // Eğer bir kelimeye odaklanmamız gerekiyorsa oraya kaydır
+                if (seciliKelime) {
+                    setTimeout(() => {
+                        const el = document.getElementById('word-' + seciliKelime);
+                        if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
+            }
+        }
+
+        function generateCardHtml(item) {
+            const anlamlar = item.anlamlar.map((a, i) => `<p class="meaning"><b>${i+1}.</b> ${a}</p>`).join('');
+            return `
+                <div class="word-card" id="word-${item.kelime}">
+                    <div class="card-header">
+                        <span class="topic-badge" onclick="filtrele('${item.konu}', '${item.kelime}')">#${item.konu}</span>
+                        <h2>${item.kelime}</h2>
+                    </div>
+                    ${anlamlar}
+                    <details>
+                        <summary style="cursor:pointer; color:#95a5a6; font-size:0.8rem;">Kaynakça</summary>
+                        <div class="source-content">${item.kaynak}</div>
+                    </details>
+                </div>
+            `;
+        }
+
+        function secVeOdakla(k) {
+            seciliKelime = k;
+            filtrele(aktifFiltre, k);
+        }
+
+        function updateButtons() {
+            document.querySelectorAll('button').forEach(b => b.classList.remove('active-filter'));
             const activeBtn = document.getElementById('btn-' + aktifFiltre);
-            if(activeBtn) {
-                activeBtn.classList.add('active-filter');
-            }
-
-            if (aktifFiltre === 'Hepsi' && oncekiFiltre !== 'Hepsi') {
-                window.scrollTo({ top: sonKaydirmaKonumu, behavior: 'smooth' });
-            } else if (aktifFiltre !== 'Hepsi') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            if (activeBtn) activeBtn.classList.add('active-filter');
         }
 
         function aramaYap() {
-            const rawKelimeInput = document.getElementById('searchInput').value;
-            const kelimeInput = metniTemizle(rawKelimeInput);
+            const s1 = metniTemizle(document.getElementById('searchInput').value);
+            const s2 = metniTemizle(document.getElementById('siteSearchInput').value);
             
-            const rawSiteInput = document.getElementById('siteSearchInput').value;
-            const siteInput = metniTemizle(rawSiteInput);
-            
-            const suggestBox = document.getElementById('suggestionBox');
-            let sonucListesi = aktifFiltre === 'Hepsi' ? sozlukVerisi : sozlukVerisi.filter(s => s.konu === aktifFiltre);
-            
-            // Sözcük Arama (Yalnızca kelime adına göre ve öneri sunar)
-            if (kelimeInput.length > 0) {
-                sonucListesi = sonucListesi.filter(s => metniTemizle(s.kelime).startsWith(kelimeInput));
-                
-                const eslesenler = sonucListesi.slice(0, 5);
-                suggestBox.style.display = eslesenler.length > 0 ? 'block' : 'none';
-                suggestBox.innerHTML = eslesenler.map(s => `<div onclick="secVeGit('${s.kelime.replace(/'/g, "\\'")}')">${s.kelime}</div>`).join('');
-            } else {
-                suggestBox.style.display = 'none';
-            }
-            
-            // Site İçi Arama (Kelime, Anlamlar ve Kaynak içinde geçen)
-            if (siteInput.length > 0) {
-                sonucListesi = sonucListesi.filter(s => {
-                    const icerik = s.kelime + " " + s.anlamlar.join(" ") + " " + s.kaynak;
-                    return metniTemizle(icerik).includes(siteInput);
-                });
-            }
-            
-            listele(sonucListesi);
+            let sonuc = sozlukVerisi.filter(s => {
+                const kMatch = metniTemizle(s.kelime).includes(s1);
+                const dMatch = metniTemizle(s.kelime + s.anlamlar.join(" ")).includes(s2);
+                return kMatch && dMatch;
+            });
+            render(sonuc);
         }
 
-        function secVeGit(kelime) {
-            document.getElementById('searchInput').value = kelime;
-            document.getElementById('suggestionBox').style.display = 'none';
-            document.getElementById('siteSearchInput').value = ''; 
-            selectedListViewWord = kelime; 
-            listele(sozlukVerisi.filter(s => s.kelime === kelime));
-        }
-
-        window.onscroll = function() {
-            const btn = document.getElementById("scrollTopBtn");
-            btn.style.display = (window.scrollY > 300) ? "block" : "none";
+        window.onscroll = () => {
+            document.getElementById("scrollTopBtn").style.display = window.scrollY > 300 ? "block" : "none";
         };
-
-        function topFunction() { 
-            window.scrollTo({top: 0, behavior: 'smooth'}); 
-        }
+        
+        function topFunction() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
         window.onload = () => {
-            // Açılışta kullanılmak üzere rastgele bir kelimeyi listeye hazırla
-            selectedListViewWord = sozlukVerisi[Math.floor(Math.random() * sozlukVerisi.length)].kelime;
-            
-            // İstatistikleri Yükle (Veri kaynağında tarih olmadığı için son 24 saati şimdilik statik 0 olarak ayarladık)
             document.getElementById('statTotalWords').innerText = sozlukVerisi.length;
-            document.getElementById('statNewWords').innerText = "0";
-
-            listele(sozlukVerisi);
+            filtrele('Hepsi');
         };
     </script>
 </body>
